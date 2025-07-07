@@ -4,73 +4,62 @@ import { CustomFilter, Hero, SearchBar } from "@/components";
 import ShowMore from "@/components/ShowMore";
 import CarCard from "@/components/CarCard";
 
-interface SearchParams {
-  manufacturer?: string;
-  year?: string;
-  model?: string;
-  limit?: string;
-  fuel?: string;
-}
-
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams?: {
+    manufacturer?: string;
+    year?: string;
+    model?: string;
+    limit?: string;
+    fuel?: string;
+  };
 }) {
-  const manufacturer = searchParams?.manufacturer || "";
-  const model = searchParams?.model || "";
-  const fuel = searchParams?.fuel || "";
   const year = Number(searchParams?.year) || 2022;
   const limit = Number(searchParams?.limit) || 10;
 
   const allCars = await fetchCars({
-    manufacturer,
+    manufacturer: searchParams?.manufacturer || "",
     year,
-    fuel,
+    fuel: searchParams?.fuel || "",
     limit,
-    model,
+    model: searchParams?.model || "",
   });
 
-  const isDataEmpty =
-    !Array.isArray(allCars) || allCars.length < 1 || !allCars;
+  const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
 
   return (
-    <main className="overflow-hidden">
+    <main className='overflow-hidden'>
       <Hero />
-
-      <div className="mt-12 padding-x padding-y max-width" id="discover">
-        <div className="home__text-container">
-          <h1 className="text-4xl font-npmextrabold">Car Catalogue</h1>
+      <div className='mt-12 padding-x padding-y max-width' id='discover'>
+        <div className='home__text-container'>
+          <h1 className='text-4xl font-npmextrabold'>Car Catalogue</h1>
           <p>Explore our cars you might like</p>
         </div>
 
-        <div className="home__filters">
+        <div className='home__filters'>
           <SearchBar />
-          <div className="home__filter-container">
-            <CustomFilter title="fuel" options={fuels} />
-            <CustomFilter title="year" options={yearsOfProduction} />
+          <div className='home__filter-container'>
+            <CustomFilter title='fuel' options={fuels} />
+            <CustomFilter title='year' options={yearsOfProduction} />
           </div>
         </div>
 
         {!isDataEmpty ? (
           <section>
-            <div className="home__cars-wrapper">
+            <div className='home__cars-wrapper'>
               {allCars?.map((car) => (
-                <CarCard
-                  key={`${car.make}-${car.model}-${car.year}`}
-                  car={car}
-                />
+                <CarCard key={`${car.make}-${car.model}-${car.year}`} car={car} />
               ))}
             </div>
-
             <ShowMore
               pageNumber={limit / 10}
               isNext={limit > allCars.length}
             />
           </section>
         ) : (
-          <div className="home__error-container">
-            <h2 className="text-black text-xl font-bold">Oops, no results</h2>
+          <div className='home__error-container'>
+            <h2 className='text-black text-xl font-bold'>Oops, no results</h2>
             <p>{allCars?.message || "Try adjusting your filters."}</p>
           </div>
         )}
