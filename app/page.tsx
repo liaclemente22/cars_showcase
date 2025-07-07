@@ -1,21 +1,30 @@
-
 import { fetchCars } from "@/utils";
-import { HomeProps } from "@/types";
 import { fuels, yearsOfProduction } from "@/constants";
-import { CustomFilter, Hero, SearchBar } from "@/components"
+import { CustomFilter, Hero, SearchBar } from "@/components";
 import ShowMore from "@/components/ShowMore";
 import CarCard from "@/components/CarCard";
 
 
+type Props = {
+  searchParams?: {
+    manufacturer?: string;
+    year?: string;
+    model?: string;
+    limit?: string;
+    fuel?: string;
+  };
+};
 
+export default async function Home({ searchParams }: Props) {
+  const year = Number(searchParams?.year) || 2022;
+  const limit = Number(searchParams?.limit) || 10;
 
-export default async function Home({ searchParams }: HomeProps) {
   const allCars = await fetchCars({
-    manufacturer: searchParams.manufacturer || "",
-    year: searchParams.year || 2022,
-    fuel: searchParams.fuel || "",
-    limit: searchParams.limit || 10,
-    model: searchParams.model || "",
+    manufacturer: searchParams?.manufacturer || "",
+    year,
+    fuel: searchParams?.fuel || "",
+    limit,
+    model: searchParams?.model || "",
   });
 
   const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
@@ -26,8 +35,8 @@ export default async function Home({ searchParams }: HomeProps) {
 
       <div className='mt-12 padding-x padding-y max-width' id='discover'>
         <div className='home__text-container'>
-          <h1 className='text-4xl font-extrabold'>Car Catalogue</h1>
-          <p>Explore out cars you might like</p>
+          <h1 className='text-4xl font-npmextrabold'>Car Catalogue</h1>
+          <p>Explore our cars you might like</p>
         </div>
 
         <div className='home__filters'>
@@ -43,19 +52,19 @@ export default async function Home({ searchParams }: HomeProps) {
           <section>
             <div className='home__cars-wrapper'>
               {allCars?.map((car) => (
-                <CarCard car={car} />
+                <CarCard key={`${car.make}-${car.model}-${car.year}`} car={car} />
               ))}
             </div>
 
             <ShowMore
-              pageNumber={(searchParams.limit || 10) / 10}
-              isNext={(searchParams.limit || 10) > allCars.length}
+              pageNumber={limit / 10}
+              isNext={limit > allCars.length}
             />
           </section>
         ) : (
           <div className='home__error-container'>
             <h2 className='text-black text-xl font-bold'>Oops, no results</h2>
-            <p>{allCars?.message}</p>
+            <p>{allCars?.message || "Try adjusting your filters."}</p>
           </div>
         )}
       </div>
