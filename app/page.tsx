@@ -3,18 +3,29 @@ import { fuels, yearsOfProduction } from "@/constants";
 import { CustomFilter, Hero, SearchBar } from "@/components";
 import ShowMore from "@/components/ShowMore";
 import CarCard from "@/components/CarCard";
-import { PageProps } from "@/types";
 
-export default async function Home({ searchParams }: { searchParams?: PageProps["searchParams"] }) {
-  const year = Number(searchParams?.year) || 2022;
-  const limit = Number(searchParams?.limit) || 10;
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    manufacturer?: string;
+    year?: string;
+    model?: string;
+    limit?: string;
+    fuel?: string;
+  }>;
+}) {
+  const params = await searchParams;
+
+  const year = Number(params.year) || 2022;
+  const limit = Number(params.limit) || 10;
 
   const allCars = await fetchCars({
-    manufacturer: searchParams?.manufacturer || "",
+    manufacturer: params.manufacturer || "",
     year,
-    fuel: searchParams?.fuel || "",
+    fuel: params.fuel || "",
     limit,
-    model: searchParams?.model || "",
+    model: params.model || "",
   });
 
   const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
@@ -41,10 +52,16 @@ export default async function Home({ searchParams }: { searchParams?: PageProps[
           <section>
             <div className="home__cars-wrapper">
               {allCars?.map((car) => (
-                <CarCard key={`${car.make}-${car.model}-${car.year}`} car={car} />
+                <CarCard
+                  key={`${car.make}-${car.model}-${car.year}`}
+                  car={car}
+                />
               ))}
             </div>
-            <ShowMore pageNumber={limit / 10} isNext={limit > allCars.length} />
+            <ShowMore
+              pageNumber={limit / 10}
+              isNext={limit > allCars.length}
+            />
           </section>
         ) : (
           <div className="home__error-container">
