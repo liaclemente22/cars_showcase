@@ -3,18 +3,9 @@ import { fuels, yearsOfProduction } from "@/constants";
 import { CustomFilter, Hero, SearchBar } from "@/components";
 import ShowMore from "@/components/ShowMore";
 import CarCard from "@/components/CarCard";
+import { PageProps } from "@/types";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: {
-    manufacturer?: string;
-    year?: string;
-    model?: string;
-    limit?: string;
-    fuel?: string;
-  };
-}) {
+export default async function Home({ searchParams }: PageProps) {
   const year = Number(searchParams?.year) || 2022;
   const limit = Number(searchParams?.limit) || 10;
 
