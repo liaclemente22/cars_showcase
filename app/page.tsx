@@ -5,7 +5,7 @@ import ShowMore from "@/components/ShowMore";
 import CarCard from "@/components/CarCard";
 import { PageProps } from "@/types";
 
-export default async function Home({ searchParams }: PageProps) {
+export default async function Home({ searchParams }: { searchParams?: PageProps["searchParams"] }) {
   const year = Number(searchParams?.year) || 2022;
   const limit = Number(searchParams?.limit) || 10;
 
