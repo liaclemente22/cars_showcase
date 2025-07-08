@@ -3,18 +3,9 @@ import { fuels, yearsOfProduction } from "@/constants";
 import { CustomFilter, Hero, SearchBar } from "@/components";
 import ShowMore from "@/components/ShowMore";
 import CarCard from "@/components/CarCard";
+import { HomeProps } from "@/types"; // 👈 import your type
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: {
-    manufacturer?: string;
-    year?: string;
-    model?: string;
-    limit?: string;
-    fuel?: string;
-  };
-}) {
+export default async function Home({ searchParams }: HomeProps) {
   const year = Number(searchParams?.year) || 2022;
   const limit = Number(searchParams?.limit) || 10;
 
@@ -52,10 +43,7 @@ export default async function Home({
                 <CarCard key={`${car.make}-${car.model}-${car.year}`} car={car} />
               ))}
             </div>
-            <ShowMore
-              pageNumber={limit / 10}
-              isNext={limit > allCars.length}
-            />
+            <ShowMore pageNumber={limit / 10} isNext={limit > allCars.length} />
           </section>
         ) : (
           <div className='home__error-container'>
